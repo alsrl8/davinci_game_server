@@ -16,13 +16,18 @@ func main() {
 
 	switch env {
 	case consts.Production:
-		certPath := os.Getenv("CERT_PATH")
-		keyPath := os.Getenv("KEY_PATH")
+		//certPath := os.Getenv("CERT_PATH")
+		//keyPath := os.Getenv("KEY_PATH")
+		//port := os.Getenv("PORT")
+		//if port == "" {
+		//	port = "8081"
+		//}
+		//app.ListenTLS(":"+port, certPath, keyPath)
 		port := os.Getenv("PORT")
 		if port == "" {
 			port = "8081"
 		}
-		app.ListenTLS(":"+port, certPath, keyPath)
+		app.Listen(":" + port)
 	case consts.Development:
 		port := os.Getenv("PORT")
 		if port == "" {
@@ -30,5 +35,4 @@ func main() {
 		}
 		app.Listen(":" + port)
 	}
-
 }
