@@ -1,17 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+	"davinci-game/config"
+	"davinci-game/consts"
+	"davinci-game/handlers"
+	"github.com/gofiber/fiber/v2"
+	"os"
 )
 
-func gameHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Da Vinci Code game server is up and running!")
-}
-
 func main() {
-	http.HandleFunc("/game", gameHandler)
-	log.Println("Starting Da Vinci Code game server on :8081...")
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	app := fiber.New()
+	app.Get("/ping", handlers.Ping)
+
+	env := config.GetRunEnv()
+
+	switch env {
+	case consts.Production:
+		certPath := os.Getenv("CERT_PATH")
+		keyPath := os.Getenv("KEY_PATH")
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8081"
+		}
+		app.ListenTLS(":"+port, certPath, keyPath)
+	case consts.Development:
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8081"
+		}
+		app.Listen(":" + port)
+	}
+
 }
