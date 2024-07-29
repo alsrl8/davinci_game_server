@@ -4,12 +4,15 @@ import (
 	"davinci-game/config"
 	"davinci-game/consts"
 	"davinci-game/handlers"
+	"davinci-game/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"os"
 )
 
 func main() {
 	app := fiber.New()
+	app.Use(middlewares.NewCORS())
+
 	app.Get("/ping", handlers.Ping)
 
 	env := config.GetRunEnv()
