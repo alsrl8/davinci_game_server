@@ -40,18 +40,18 @@ jobs:
 
       - name: Setup SSH Key
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > id_rsa_game
-          chmod 400 id_rsa_game
+          echo "${{ secrets.EC2_SSH_KEY }}" > id_rsa
+          chmod 400 id_rsa
 
       - name: Stop service
         run: |
-          ssh -o StrictHostKeyChecking=no -i id_rsa_game ubuntu@${{ secrets.EC2_IP }} 'sudo systemctl stop game.service'          
+          ssh -o StrictHostKeyChecking=no -i id_rsa ubuntu@${{ secrets.EC2_IP }} 'sudo systemctl stop game.service'          
 
       - name: Copy binary to EC2
         run: |
-          scp -o StrictHostKeyChecking=no -i id_rsa_game game ubuntu@${{ secrets.EC2_IP }}:/home/ubuntu/davinci/game
+          scp -o StrictHostKeyChecking=no -i id_rsa game ubuntu@${{ secrets.EC2_IP }}:/home/ubuntu/davinci/game
 
       - name: Start service
         run: |
-          ssh -o StrictHostKeyChecking=no -i id_rsa_game ubuntu@${{ secrets.EC2_IP }} 'sudo systemctl start game.service'
+          ssh -o StrictHostKeyChecking=no -i id_rsa ubuntu@${{ secrets.EC2_IP }} 'sudo systemctl start game.service'
 

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"davinci-game/game"
+	"davinci-game/core"
 	"davinci-game/utils"
 	"github.com/gofiber/fiber/v2"
 )
