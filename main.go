@@ -3,8 +3,9 @@ package main
 import (
 	"davinci-game/config"
 	"davinci-game/consts"
-	"davinci-game/handlers"
 	"davinci-game/middlewares"
+	"davinci-game/routes"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"os"
 )
@@ -13,10 +14,13 @@ func main() {
 	app := fiber.New()
 	app.Use(middlewares.NewCORS())
 
-	app.Get("/ping", handlers.Ping)
+	routes.SetupRoutes(app)
 
+	runByEnv(app)
+}
+
+func runByEnv(app *fiber.App) {
 	env := config.GetRunEnv()
-
 	switch env {
 	case consts.Production:
 		certPath := os.Getenv("CERT_PATH")
@@ -25,12 +29,14 @@ func main() {
 		if port == "" {
 			port = "8081"
 		}
-		app.ListenTLS(":"+port, certPath, keyPath)
+		err := app.ListenTLS(":"+port, certPath, keyPath)
+		fmt.Println(err)
 	case consts.Development:
 		port := os.Getenv("PORT")
 		if port == "" {
 			port = "8081"
 		}
-		app.Listen("localhost:" + port)
+		err := app.Listen("localhost:" + port)
+		fmt.Println(err)
 	}
 }
