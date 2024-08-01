@@ -15,10 +15,15 @@ func CreateRoomHandler(c *fiber.Ctx) error {
 	prevRoom, has := game.EmailRoomMap[email]
 	if has {
 		// TODO Game Room Owner가 새 연결을 시도한 경우, 기존 Room에 있던 모든 유저는 Close 해야 한다.
-		conn := prevRoom.SocketConnections[email]
-		err = conn.Close()
-		if err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "failed to close previous game room"})
+		conn, has := prevRoom.SocketConnections[email]
+		if has {
+			if conn != nil {
+				err = conn.Close()
+				if err != nil {
+					return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "failed to close previous game room"})
+				}
+			}
+			delete(prevRoom.SocketConnections, email)
 		}
 	}
 
